@@ -7,6 +7,9 @@ import OpenedEyeIcon from "../../public/static/svg/auth/opened_eye.svg";
 import ClosedEyeIcon from "../../public/static/svg/auth/closed_eye.svg";
 import palette from "../../styles/palette";
 import Input from "../common/Input";
+import Selector from "../common/Selector";
+import Button from "../common/Button";
+import { dayList, monthList, yearList } from "../../lib/staticData";
 
 const Container = styled.form`
   width: 568px;
@@ -68,12 +71,20 @@ const Container = styled.form`
   }
 `;
 
-const SignUpModal: React.FC = () => {
+interface IProps {
+    closeModal: () => void;
+}
+
+const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
     const [email, setEmail] = useState("");
     const [lastname, setLastname] = useState("");
     const [firstname, setFirstname] = useState("");
     const [password, setPassword] = useState("");
     const [hidePassword, setHidePassword] = useState(true);
+
+    const [birthYear, setBirthYear] = useState<string | undefined>();
+    const [birthDay, setBirthDay] = useState<string | undefined>();
+    const [birthMonth, setBirthMonth] = useState<string | undefined>();
 
     //*비밀번호 숨김 토글하기
     const toggleHidePassword = useCallback(() => {
@@ -113,9 +124,33 @@ const SignUpModal: React.FC = () => {
         []
     );
 
+    //* 생년월일 월 변경시
+    const onChangeBirthMonth = useCallback(
+        (event: React.ChangeEvent<HTMLSelectElement>) => {
+            setBirthMonth(event.target.value);
+        },
+        []
+    );
+
+    //* 생년월일 일 변경시
+    const onChangeBirthDay = useCallback(
+        (event: React.ChangeEvent<HTMLSelectElement>) => {
+            setBirthDay(event.target.value);
+        },
+        []
+    );
+
+    //* 생년월일 년 변경시
+    const onChangeBirthYear = useCallback(
+        (event: React.ChangeEvent<HTMLSelectElement>) => {
+            setBirthYear(event.target.value);
+        },
+        []
+    );
+
     return (
         <Container>
-            <CloseXIcon className="mordal-close-x-icon"/>
+            <CloseXIcon className="mordal-close-x-icon" onClick={closeModal}/>
             <div className="input-wrapper">
                 <Input
                     placeholder="이메일 주소"
@@ -155,9 +190,48 @@ const SignUpModal: React.FC = () => {
                     }
                     value={password}
                     onChange={onChangePassword}
+
                 />
             </div>
-
+            <p className="sign-up-birthdat-label">생일</p>
+            <p className="sign-up-modal-birthday-info">
+                만 18세 이상의 성인만 회원으로 가입할 수 있습니다. 생일은 다른
+                 이용자에게 공개되지 않습니다.
+            </p>
+            <div className="sign-up-modal-birthday-selectors">
+                <div className="sign-up-modal-birthday-month-selector">
+                    <Selector
+                        options={monthList}
+                        disabledOptions={["월"]}
+                        defaultValue="월"
+                        value={birthMonth}
+                        onChange={onChangeBirthMonth}
+                    />
+                </div>
+                <div className="sign-up-modal-birthday-day-selector">
+                    <Selector
+                        options={dayList}
+                        disabledOptions={["일"]}
+                        defaultValue="일"
+                        value={birthDay}
+                        onChange={onChangeBirthDay}
+                    />
+                </div>
+                <div className="sign-up-modal-birthday-year-selector">
+                    <Selector
+                        options={yearList}
+                        disabledOptions={["년"]}
+                        defaultValue="년"
+                        value={birthYear}
+                        onChange={onChangeBirthYear}
+                    />
+                </div>
+            </div>
+            <div className="sign-up-modal-submit-button-wrapper">
+                <Button type="submit">
+                    가입 하기
+                </Button>
+            </div>
         </Container>
     );
 };
