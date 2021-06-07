@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import CloseXIcon from "../../public/static/svg/modal/modal_colose_x_icon.svg";
 import MailIcon from "../../public/static/svg/auth/mail.svg";
 import PersonIcon from "../../public/static/svg/auth/person.svg";
@@ -10,6 +11,7 @@ import Input from "../common/Input";
 import Selector from "../common/Selector";
 import Button from "../common/Button";
 import { dayList, monthList, yearList } from "../../lib/staticData";
+import { SIGN_UP_REQUEST } from '../../reducers/user';
 
 const Container = styled.form`
   width: 568px;
@@ -86,6 +88,8 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
     const [birthDay, setBirthDay] = useState<string | undefined>();
     const [birthMonth, setBirthMonth] = useState<string | undefined>();
 
+    const dispatch = useDispatch();
+
     //*비밀번호 숨김 토글하기
     const toggleHidePassword = useCallback(() => {
         setHidePassword(!hidePassword);
@@ -148,8 +152,30 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
         []
     );
 
+    //* 회원가입 폼 제출하기
+    const onSubmitSignUp = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const signUpBody = {
+            email,
+            lastname,
+            firstname,
+            password,
+            birthday: new Date(
+                `${birthYear}-${birthMonth!.replace("월", "")}-${birthDay}`
+            ).toISOString(),
+        };
+
+        dispatch({
+            type: SIGN_UP_REQUEST,
+            data: signUpBody,
+        });
+        closeModal();
+
+    };
+
     return (
-        <Container>
+        <Container onSubmit={onSubmitSignUp}>
             <CloseXIcon className="mordal-close-x-icon" onClick={closeModal}/>
             <div className="input-wrapper">
                 <Input
