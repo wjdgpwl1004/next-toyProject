@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { useSelector } from 'react-redux';
 import palette from "../../styles/palette";
 
 type InputContainerProps = {
@@ -35,6 +36,8 @@ const Container = styled.div<InputContainerProps>`
     position: absolute;
     right: 11px;
     height: 46px;
+    top: 50%;
+    margin-top: -8px;
   }
   .input-error-message {
     margin-top: 8px;
@@ -66,16 +69,39 @@ const Container = styled.div<InputContainerProps>`
 
 interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
     icon?: JSX.Element;
+    label?: string;
+    isValid?: boolean;
+    useValidation?: boolean;
+    errorMessage?: string;
 }
 
 const Input: React.FC<IProps> = ({
+     label,
      icon,
+     isValid = false,
+     useValidation = true,
+     errorMessage,
      ...props
  }) => {
+    const validateMode = useSelector((state: any) => state.common.validateMode);
+
     return (
-        <Container iconExist={!!icon}>
-            <input {...props}/>
-            <div className="input-icon-wrapper">{icon}</div>
+        <Container
+            iconExist={!!icon}
+            isValid={isValid}
+            useValidation={validateMode && useValidation}
+        >
+            {label && (
+                <label>
+                    <span>{label}</span>
+                    <input {...props} />
+                </label>
+            )}
+            {!label && <input {...props} />}
+            {icon}
+            {useValidation && validateMode && !isValid && errorMessage && (
+                <p className="input-error-message">{errorMessage}</p>
+            )}
         </Container>
     );
 };
