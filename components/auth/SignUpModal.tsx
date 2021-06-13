@@ -14,6 +14,7 @@ import { dayList, monthList, yearList } from "../../lib/staticData";
 import { SIGN_UP_REQUEST } from '../../reducers/user';
 import useValidateMode from "../../hooks/useValidateMode";
 import PasswordWarning from "./PasswordWarning";
+import {setAuthMode} from "../../reducers/auth";
 
 const Container = styled.form`
   width: 568px;
@@ -250,6 +251,10 @@ const { setValidateMode } = useValidateMode();
             }
         }
     };
+    //* 로그인 모달로 변경하기
+    const changeToLoginModal = useCallback(() => {
+        dispatch(setAuthMode("login"));
+    }, []);
 
     return (
         <Container onSubmit={onSubmitSignUp}>
@@ -372,7 +377,7 @@ const { setValidateMode } = useValidateMode();
                 <span
                     className="sign-up-modal-set-login"
                     role="presentation"
-                    onClick={() => {}}
+                    onClick={changeToLoginModal}
                 >
                   로그인
                 </span>

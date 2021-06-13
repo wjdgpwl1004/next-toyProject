@@ -3,8 +3,11 @@ import styled from "styled-components";
 import Link from "next/link";
 import palette from "../styles/palette";
 import useModal from "../hooks/useModal";
-import SignUpModal from "./auth/SignUpMotal";
-// import { useSelector } from "../store";
+import SignUpModal from "./auth/SignUpModal";
+import { useDispatch, useSelector } from 'react-redux';
+import HamburgerIcon from "../public/static/svg/header/hamburger.svg";
+import { setAuthMode } from "../reducers/auth";
+import AuthModal from "./auth/AuthModal";
 
 // import HeaderAuths from "./HeaderAuths";
 // import HeaderUserProfile from "./HeaderUserProfile";
@@ -113,8 +116,11 @@ const Container = styled.div`
 `;
 
 const Header: React.FC = () => {
-    // const isLogged = useSelector((state) => state.user.isLogged);
+    const isLogged = useSelector((state: any) => state.user.isLogged);
+    const userProfileImage = useSelector((state: any) => state.user.profileImage);
     const { openModal, ModalPortal, closeModal } = useModal();
+
+    const dispatch = useDispatch();
     return (
         <Container>
             <Link href="/">
@@ -122,23 +128,45 @@ const Header: React.FC = () => {
                     bearTrip
                 </a>
             </Link>
-            <div className="header-auth-buttons">
+            {!isLogged && (
+                <div className="header-auth-buttons">
+                    <button
+                        className="header-sign-up-button"
+                        type="button"
+                        onClick={() => {
+                            dispatch(setAuthMode("signup"));
+                            openModal();
+                        }}
+                    >
+                        회원가입
+                    </button>
+                    <button
+                        className="header-login-button"
+                        type="button"
+                        onClick={() => {
+                            dispatch(setAuthMode("login"));
+                            openModal();
+                        }}
+                    >
+                        로그인
+                    </button>
+                </div>
+            )}
+            {isLogged && (
                 <button
-                    className="header-sign-up-button"
-                    type="button"
-                    onClick={openModal}
-                >
-                    회원가입
-                </button>
-                <button
-                    className="header-login-button"
+                    className="header-user-profile"
                     type="button"
                 >
-                    로그인
+                    <HamburgerIcon />
+                    <img
+                        src={userProfileImage}
+                        className="header-user-profile-image"
+                        alt=""
+                    />
                 </button>
-            </div>
+            )}
             <ModalPortal>
-                <SignUpModal closeModal={closeModal}/>
+                <AuthModal closeModal={closeModal} />
             </ModalPortal>
             {/*<HeaderAuths />*/}
             {/*<HeaderUserProfile />*/}
