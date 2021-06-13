@@ -9,6 +9,8 @@ import palette from "../../styles/palette";
 import Button from "../common/Button";
 import Input from "../common/Input";
 import {setAuthMode} from "../../reducers/auth";
+import {LOG_IN_REQUEST} from "../../reducers/user";
+import useValidateMode from "../../hooks/useValidateMode";
 
 const Container = styled.form`
   width: 568px;
@@ -56,6 +58,8 @@ const LoginModal: React.FC<IProps> = ({ closeModal }) => {
 
     const dispatch = useDispatch();
 
+    const { setValidateMode } = useValidateMode();
+
     //*비밀번호 숨김 토글하기
     const togglePasswordHiding = () => {
         setIsPasswordHided(!isPasswordHided);
@@ -74,8 +78,35 @@ const LoginModal: React.FC<IProps> = ({ closeModal }) => {
     const changeToSignUpModal = useCallback(() => {
         dispatch(setAuthMode("signup"));
     }, []);
+
+    const onSubmitLogin = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setValidateMode(true);
+        if (!email || !password) {
+            alert("이메일과 비밀번호를 입력해 주세요.");
+        } else {
+            const loginBody = { email, password };
+
+            try {
+                dispatch({
+                    type: LOG_IN_REQUEST,
+                    data: loginBody,
+                });
+                closeModal();
+            } catch (e) {
+                console.log(e.response);
+            }
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            setValidateMode(false);
+        };
+    }, []);
+
     return (
-        <Container>
+        <Container onSubmit={onSubmitLogin}>
             <CloseXIcon className="mordal-close-x-icon" onClick={closeModal} />
             <div className="login-input-wrapper">
                 <Input
@@ -85,6 +116,8 @@ const LoginModal: React.FC<IProps> = ({ closeModal }) => {
                     icon={<MailIcon />}
                     value={email}
                     onChange={onChangeEmail}
+                    isValid={email !== ""}
+                    errorMessage="이메일이 필요합니다."
                 />
             </div>
             <div className="login-input-wrapper login-password-input-wrapper">
@@ -101,6 +134,8 @@ const LoginModal: React.FC<IProps> = ({ closeModal }) => {
                     }
                     value={password}
                     onChange={onChangePassword}
+                    isValid={password !== ""}
+                    errorMessage="비밀번호를 입력하세요."
                 />
             </div>
             <div className="login-modal-submit-button-wrapper">
@@ -109,7 +144,7 @@ const LoginModal: React.FC<IProps> = ({ closeModal }) => {
                 </Button>
             </div>
             <p>
-                이미 에어비앤비 계정이 있나요?
+                계정이 없나요?
                 <span
                     className="login-modal-set-signup"
                     role="presentation"

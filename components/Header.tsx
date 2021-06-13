@@ -3,11 +3,12 @@ import styled from "styled-components";
 import Link from "next/link";
 import palette from "../styles/palette";
 import useModal from "../hooks/useModal";
-import SignUpModal from "./auth/SignUpModal";
 import { useDispatch, useSelector } from 'react-redux';
 import HamburgerIcon from "../public/static/svg/header/hamburger.svg";
 import { setAuthMode } from "../reducers/auth";
 import AuthModal from "./auth/AuthModal";
+import OutsideClickHandler from "react-outside-click-handler";
+import {LOG_OUT_REQUEST} from "../reducers/user";
 
 // import HeaderAuths from "./HeaderAuths";
 // import HeaderUserProfile from "./HeaderUserProfile";
@@ -119,8 +120,22 @@ const Header: React.FC = () => {
     const isLogged = useSelector((state: any) => state.user.isLogged);
     const userProfileImage = useSelector((state: any) => state.user.profileImage);
     const { openModal, ModalPortal, closeModal } = useModal();
+    //* 유저메뉴 열고,닫힘 여부
+    const [isUsermenuOpened, setIsUsermenuOpened] = useState(false);
 
     const dispatch = useDispatch();
+
+    //* 로그아웃 하기
+    const logout = () => {
+        try {
+            dispatch({
+                type: LOG_OUT_REQUEST
+            });
+        } catch (e) {
+            console.log(e.message);
+        }
+    };
+
     return (
         <Container>
             <Link href="/">
@@ -153,17 +168,45 @@ const Header: React.FC = () => {
                 </div>
             )}
             {isLogged && (
-                <button
-                    className="header-user-profile"
-                    type="button"
+                <OutsideClickHandler
+                    onOutsideClick={() => {
+                        if (isUsermenuOpened) {
+                            setIsUsermenuOpened(false);
+                        }
+                    }}
                 >
-                    <HamburgerIcon />
-                    <img
-                        src={userProfileImage}
-                        className="header-user-profile-image"
-                        alt=""
-                    />
-                </button>
+                    <button
+                        className="header-user-profile"
+                        type="button"
+                        onClick={() => setIsUsermenuOpened(!isUsermenuOpened)}
+                    >
+                        <HamburgerIcon />
+                        <img
+                            src={userProfileImage}
+                            className="header-user-profile-image"
+                            alt=""
+                        />
+                    </button>
+                    {isUsermenuOpened && (
+                        <ul className="header-usermenu">
+                            <li>숙소 관리</li>
+                            <Link href="/room/register/building">
+                                <a
+                                    role="presentation"
+                                    onClick={() => {
+                                        setIsUsermenuOpened(false);
+                                    }}
+                                >
+                                    <li>숙소 등록하기</li>
+                                </a>
+                            </Link>
+                            <div className="header-usermenu-divider" />
+                            <li role="presentation" onClick={logout}>
+                                로그아웃
+                            </li>
+                        </ul>
+                    )}
+                </OutsideClickHandler>
             )}
             <ModalPortal>
                 <AuthModal closeModal={closeModal} />

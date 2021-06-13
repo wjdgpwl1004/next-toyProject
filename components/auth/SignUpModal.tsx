@@ -373,7 +373,7 @@ const { setValidateMode } = useValidateMode();
                 </Button>
             </div>
             <p>
-                이미 에어비앤비 계정이 있나요?
+                이미 계정이 있나요?
                 <span
                     className="sign-up-modal-set-login"
                     role="presentation"
