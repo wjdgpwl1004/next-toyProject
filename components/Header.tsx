@@ -9,6 +9,8 @@ import { setAuthMode } from "../reducers/auth";
 import AuthModal from "./auth/AuthModal";
 import OutsideClickHandler from "react-outside-click-handler";
 import {LOG_OUT_REQUEST} from "../reducers/user";
+import HeaderAuths from "./HeaderAuths";
+import HeaderUserProfile from "./HeaderUserProfile";
 
 // import HeaderAuths from "./HeaderAuths";
 // import HeaderUserProfile from "./HeaderUserProfile";
@@ -118,23 +120,6 @@ const Container = styled.div`
 
 const Header: React.FC = () => {
     const isLogged = useSelector((state: any) => state.user.isLogged);
-    const userProfileImage = useSelector((state: any) => state.user.profileImage);
-    const { openModal, ModalPortal, closeModal } = useModal();
-    //* 유저메뉴 열고,닫힘 여부
-    const [isUsermenuOpened, setIsUsermenuOpened] = useState(false);
-
-    const dispatch = useDispatch();
-
-    //* 로그아웃 하기
-    const logout = () => {
-        try {
-            dispatch({
-                type: LOG_OUT_REQUEST
-            });
-        } catch (e) {
-            console.log(e.message);
-        }
-    };
 
     return (
         <Container>
@@ -143,76 +128,8 @@ const Header: React.FC = () => {
                     bearTrip
                 </a>
             </Link>
-            {!isLogged && (
-                <div className="header-auth-buttons">
-                    <button
-                        className="header-sign-up-button"
-                        type="button"
-                        onClick={() => {
-                            dispatch(setAuthMode("signup"));
-                            openModal();
-                        }}
-                    >
-                        회원가입
-                    </button>
-                    <button
-                        className="header-login-button"
-                        type="button"
-                        onClick={() => {
-                            dispatch(setAuthMode("login"));
-                            openModal();
-                        }}
-                    >
-                        로그인
-                    </button>
-                </div>
-            )}
-            {isLogged && (
-                <OutsideClickHandler
-                    onOutsideClick={() => {
-                        if (isUsermenuOpened) {
-                            setIsUsermenuOpened(false);
-                        }
-                    }}
-                >
-                    <button
-                        className="header-user-profile"
-                        type="button"
-                        onClick={() => setIsUsermenuOpened(!isUsermenuOpened)}
-                    >
-                        <HamburgerIcon />
-                        <img
-                            src={userProfileImage}
-                            className="header-user-profile-image"
-                            alt=""
-                        />
-                    </button>
-                    {isUsermenuOpened && (
-                        <ul className="header-usermenu">
-                            <li>숙소 관리</li>
-                            <Link href="/room/register/building">
-                                <a
-                                    role="presentation"
-                                    onClick={() => {
-                                        setIsUsermenuOpened(false);
-                                    }}
-                                >
-                                    <li>숙소 등록하기</li>
-                                </a>
-                            </Link>
-                            <div className="header-usermenu-divider" />
-                            <li role="presentation" onClick={logout}>
-                                로그아웃
-                            </li>
-                        </ul>
-                    )}
-                </OutsideClickHandler>
-            )}
-            <ModalPortal>
-                <AuthModal closeModal={closeModal} />
-            </ModalPortal>
-            {/*<HeaderAuths />*/}
-            {/*<HeaderUserProfile />*/}
+            {!isLogged && <HeaderAuths/>}
+            {isLogged && <HeaderUserProfile />}
         </Container>
     );
 };
