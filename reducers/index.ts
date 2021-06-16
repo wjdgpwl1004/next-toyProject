@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import common from './common';
 import user from './user';
 import auth from './auth';
+import registerRoom from './registerRoom';
 
 // (이전상태, 액션) => 다음상태
 const rootReducer = (state: any, action: any) => {
@@ -14,6 +15,7 @@ const rootReducer = (state: any, action: any) => {
         common,
         user,
         auth,
+        registerRoom,
       });
       return combinedReducer(state, action);
     }
