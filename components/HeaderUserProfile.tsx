@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import HamburgerIcon from "../public/static/svg/header/hamburger.svg";
 import {LOG_OUT_REQUEST} from "../reducers/user";
-import HeaderAuths from "./HeaderAuths";
 
 const HeaderUserProfile: React.FC = () => {
     //* 유저메뉴 열고,닫힘 여부
