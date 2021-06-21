@@ -2,18 +2,9 @@ import React, {useState} from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import palette from "../styles/palette";
-import useModal from "../hooks/useModal";
 import { useDispatch, useSelector } from 'react-redux';
-import HamburgerIcon from "../public/static/svg/header/hamburger.svg";
-import { setAuthMode } from "../reducers/auth";
-import AuthModal from "./auth/AuthModal";
-import OutsideClickHandler from "react-outside-click-handler";
-import {LOG_OUT_REQUEST} from "../reducers/user";
 import HeaderAuths from "./HeaderAuths";
 import HeaderUserProfile from "./HeaderUserProfile";
-
-// import HeaderAuths from "./HeaderAuths";
-// import HeaderUserProfile from "./HeaderUserProfile";
 
 const Container = styled.div`
   position: sticky;
