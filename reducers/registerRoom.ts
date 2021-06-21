@@ -21,6 +21,8 @@ const initialState: RegisterRoomState = {
 
 export const LARGE_BUILDING_TYPE = 'LARGE_BUILDING_TYPE';
 export const BUILDING_TYPE = 'BUILDING_TYPE';
+export const ROOM_TYPE = 'ROOM_TYPE';
+export const FOR_GUEST_TYPE = 'FOR_GUEST_TYPE';
 
 export const selectLargeBuildingType = (data: string) => {
   return {
@@ -36,6 +38,19 @@ export const selectBuildingType = (data: string) => {
     }
 };
 
+export const selectRoomType = (data: string) => {
+    return {
+        type: ROOM_TYPE,
+        data,
+    }
+};
+
+export const selectForGuest = (data: boolean) => {
+    return {
+        type: FOR_GUEST_TYPE,
+        data,
+    }
+};
 
 const reducer = (state = initialState, action: any) => produce(state, (draft) => {
     switch (action.type) {
@@ -50,6 +65,12 @@ const reducer = (state = initialState, action: any) => produce(state, (draft) =>
                 draft.buildingType = null;
             }
             draft.buildingType = action.data;
+            break;
+        case ROOM_TYPE:
+            draft.roomType = action.data;
+            break;
+        case FOR_GUEST_TYPE:
+            draft.isSetUpForGuest = action.data;
             break;
         default:
             break;
